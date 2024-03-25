@@ -56,16 +56,15 @@ const posts = [
     }
 ];
 
-
 // Ricreiamo un feed social aggiungendo al layout di base fornito, il nostro script JS in cui:
-// Milestone 1 - Prendendo come riferimento il layout di esempio presente nell'html, stampiamo i post del nostro feed.
+// Milestone 1 - Prendendo come riferimento il layout di esempio presente nell'html, stampiamo i post del nostro feed.✔️
 // Milestone 2 - Se clicchiamo sul tasto "Mi Piace" cambiamo il colore al testo del bottone e incrementiamo il counter
 //               dei likes relativo.
 // Salviamo in un secondo array gli id dei post ai quali abbiamo messo il like.
 // BONUS
 // 1. Formattare le date in formato italiano (gg/mm/aaaa)
 // 2. Gestire l'assenza dell'immagine profilo con un elemento di fallback che contiene le iniziali dell'utente 
-// (es. Luca Formicola > LF).
+// (es. Luca Formicola > LF).✔️
 // 3. Al click su un pulsante "Mi Piace" di un post, se abbiamo già cliccato dobbiamo decrementare il contatore e 
 // cambiare il colore del bottone.
 // Consigli del giorno:
@@ -73,3 +72,73 @@ const posts = [
 // Prima scriviamo nei commenti la logica in italiano e poi traduciamo in codice.
 // console.log() è nostro amico.
 // Quando un pezzo di codice funziona, chiediamoci se possiamo scomporlo in funzioni più piccole.
+
+const container = document.getElementById('container');
+
+posts.forEach((singlePost) => {
+     const postTemplate = generatePost(singlePost);
+     container.innerHTML += postTemplate;
+});
+
+
+
+
+
+// FUNCTIONS 
+
+function generatePost(postObject) {
+    const {id, content, media, author, likes, created} = postObject;
+    const {name, image} = author;
+
+    // const dataArray = created.split('-');
+    // const [year, month, day] = dataArray;
+
+    const postTemplate =`
+        <div class="post">
+            <div class="post__header">
+                <div class="post-meta">                    
+                    <div class="post-meta__icon">
+                          ${authorImage(author)}           
+                    </div>
+                    <div class="post-meta__data">
+                        <div class="post-meta__author">${name}</div>
+                        <div class="post-meta__time">${created}</div>
+                    </div>                    
+                </div>
+            </div>
+            <div class="post__text">${content}</div>
+            <div class="post__image">
+                <img src="${media}" alt="">
+            </div>
+            <div class="post__footer">
+                <div class="likes js-likes">
+                    <div class="likes__cta">
+                        <a class="like-button  js-like-button" href="#" data-postid="${id}">
+                            <i class="like-button__icon fas fa-thumbs-up" aria-hidden="true"></i>
+                            <span class="like-button__label">Mi Piace</span>
+                        </a>
+                    </div>
+                    <div class="likes__counter">
+                        Piace a <b id="like-counter-${id}" class="js-likes-counter">${likes}</b> persone
+                    </div>
+                </div> 
+            </div>            
+        </div>
+    `;
+    return postTemplate;
+};
+
+function authorImage(author) {
+    const nameArray = author.name.split(' ');
+    const [firstname, lastname] = nameArray;
+    const letterFirstnameArray = firstname.split('');
+    const letterLastnameArray =lastname.split('');
+
+    let authorPic;
+    if(author.image) {
+        authorPic =`<img class="profile-pic" src="${author.image}" alt="${author.name}">`    
+        } else {
+            authorPic = `${letterFirstnameArray[0]}${letterLastnameArray[0]}`
+        }
+    return authorPic;
+};
