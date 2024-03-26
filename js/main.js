@@ -80,18 +80,45 @@ posts.forEach((singlePost) => {
      container.innerHTML += postTemplate;
 });
 
+const allLikeBtn = document.querySelectorAll('.js-like-button');
+const likeCounter = document.querySelectorAll('.js-likes-counter');
+
+const likedPostArray = [];
+
+
+allLikeBtn.forEach((greenBtn, index) => {
+    const thisLikeCounter = likeCounter[index];
+
+    greenBtn.addEventListener('click', function(event) {
+        event.preventDefault();
+
+        const likePost = allLikeBtn[index];
+        if(!likePost.classList.contains("like-button--liked")) {
+            likePost.classList.add('like-button--liked');
+            parseInt(thisLikeCounter.textContent++);
+            likedPostArray.push(index);
+        } else {
+            likePost.classList.remove('like-button--liked');
+            parseInt(thisLikeCounter.textContent--);
+            likedPostArray.splice(likedPostArray.indexOf(index), 1);
+        }
+    });
+   
+});
+
+console.log(likedPostArray);
 
 
 
 
 // FUNCTIONS 
-
+// funzione per gestire il template 
 function generatePost(postObject) {
     const {id, content, media, author, likes, created} = postObject;
     const {name, image} = author;
 
-    // const dataArray = created.split('-');
-    // const [year, month, day] = dataArray;
+    const createdArray = created.split('-');
+    const [year, month, day] = createdArray;
 
     const postTemplate =`
         <div class="post">
@@ -102,7 +129,7 @@ function generatePost(postObject) {
                     </div>
                     <div class="post-meta__data">
                         <div class="post-meta__author">${name}</div>
-                        <div class="post-meta__time">${created}</div>
+                        <div class="post-meta__time">${day}-${month}-${year}</div>
                     </div>                    
                 </div>
             </div>
@@ -128,6 +155,7 @@ function generatePost(postObject) {
     return postTemplate;
 };
 
+// funzione per gestire l'immagine del profilo 
 function authorImage(author) {
     const nameArray = author.name.split(' ');
     const [firstname, lastname] = nameArray;
